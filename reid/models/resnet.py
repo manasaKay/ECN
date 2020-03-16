@@ -108,6 +108,8 @@ class ResNet(nn.Module):
             x = self.drop(x)
         if self.num_classes > 0:
             x = self.classifier(x)
+        if output_feature == 'src_feat':
+            return x, tgt_feat
         return x
 
     def reset_params(self):

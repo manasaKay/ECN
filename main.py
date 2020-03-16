@@ -142,7 +142,7 @@ def main(args):
                                 nesterov=True)
 
     # Trainer
-    trainer = Trainer(model, model_inv, lmd=args.lmd)
+    trainer = Trainer(model, model_inv, lmd=args.lmd, include_mmd=args.include_mmd)
 
     # Schedule learning rate
     def adjust_lr(epoch):
@@ -189,7 +189,7 @@ if __name__ == '__main__':
                         help="input width, default: 128")
     # model
     parser.add_argument('-a', '--arch', type=str, default='resnet50',
-                        choices=models.names())
+                        choices=models.names())   
     parser.add_argument('--features', type=int, default=4096)
     parser.add_argument('--dropout', type=float, default=0.5)
     # optimizer
@@ -198,6 +198,8 @@ if __name__ == '__main__':
                              "parameters it is 10 times smaller than this")
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
+    parser.add_argument('-mmd', '--include_mmd', type=int, default=0,
+                        help='flag for including mmd loss while training.')
     # training configs
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true',

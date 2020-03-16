@@ -11,16 +11,18 @@ import numpy as np
 import visdom
 import os
 import torch.nn.functional as F
-
+from reid.loss.mmd import MmdLoss
 
 class Trainer(object):
-    def __init__(self, model, model_inv, lmd=0.3):
+    def __init__(self, model, model_inv, lmd=0.3, include_mmd=0):
         super(Trainer, self).__init__()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = model
         self.model_inv = model_inv
         self.pid_criterion = torch.nn.CrossEntropyLoss().to(self.device)
         self.lmd = lmd
+        self.include_mmd = include_mmd
+        self.mmd_criterion = MmdLoss()
 
     def train(self, epoch, data_loader, target_train_loader, optimizer, print_freq=1):
         self.set_model_train()
@@ -51,24 +53,28 @@ class Trainer(object):
             inputs_target, index_target = self._parse_tgt_data(inputs_target)
 
             # Source pid loss
-            outputs = self.model(inputs)
-            source_pid_loss = self.pid_criterion(outputs, pids)
-            prec, = accuracy(outputs.data, pids.data)
+            outputs_source, outputs_source_partial = self.model(inputs, 'src_feat')
+            source_pid_loss = self.pid_criterion(outputs_source, pids)
+            prec, = accuracy(outputs_source.data, pids.data)
             prec1 = prec[0]
 
             # Target invariance loss
-            outputs = self.model(inputs_target, 'tgt_feat')
+            outputs_target = self.model(inputs_target, 'tgt_feat')
+            loss_un = self.model_inv(outputs_target, index_target, epoch=epoch)
 
-            loss_un = self.model_inv(outputs, index_target, epoch=epoch)
-
-            loss = (1 - self.lmd) * source_pid_loss + self.lmd * loss_un
+            # Mmd loss
+            if self.include_mmd:   
+                loss_mmd = self.mmd_criterion(outputs_source_partial, outputs_target)
+                loss = (1 - self.lmd) * source_pid_loss + self.lmd * (loss_un + loss_mmd)
+            else:
+                loss = (1 - self.lmd) * source_pid_loss + self.lmd * (loss_un)
 
             loss_print = {}
             loss_print['s_pid_loss'] = source_pid_loss.item()
             loss_print['t_un_loss'] = loss_un.item()
 
-            losses.update(loss.item(), outputs.size(0))
-            precisions.update(prec1, outputs.size(0))
+            losses.update(loss.item(), outputs_target.size(0))
+            precisions.update(prec1, outputs_target.size(0))
 
             optimizer.zero_grad()
             loss.backward()
