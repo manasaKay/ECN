@@ -142,7 +142,7 @@ def main(args):
                                 nesterov=True)
 
     # Trainer
-    trainer = Trainer(model, model_inv, lmd=args.lmd, include_mmd=args.include_mmd)
+    trainer = Trainer(model, model_inv, lmd=args.lmd, include_mmd=args.include_mmd, include_coral=args.include_coral, lmd_ext=args.lmd_ext)
 
     # Schedule learning rate
     def adjust_lr(epoch):
@@ -229,5 +229,7 @@ if __name__ == '__main__':
                         help='number of KNN for neighborhood invariance')
     parser.add_argument('--lmd', type=float, default=0.3,
                         help='weight controls the importance of the source loss and the target loss.')
+    parser.add_argument('--lmd_ext', type=float, default=0.3,
+                        help='weight controls the importance of mmd/coral.')
     args = parser.parse_args()
     main(args)
