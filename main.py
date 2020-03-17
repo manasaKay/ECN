@@ -200,6 +200,8 @@ if __name__ == '__main__':
     parser.add_argument('--weight-decay', type=float, default=5e-4)
     parser.add_argument('-mmd', '--include_mmd', type=int, default=0,
                         help='flag for including mmd loss while training.')
+    parser.add_argument('-coral', '--include_coral', type=int, default=0,
+                        help='flag for including coral loss while training.')
     # training configs
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true',

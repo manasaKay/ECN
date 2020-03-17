@@ -12,9 +12,10 @@ import visdom
 import os
 import torch.nn.functional as F
 from reid.loss.mmd import MmdLoss
+from reid.loss.coral import CoralLoss
 
 class Trainer(object):
-    def __init__(self, model, model_inv, lmd=0.3, include_mmd=0):
+    def __init__(self, model, model_inv, lmd=0.3, include_mmd=0, include_coral=0):
         super(Trainer, self).__init__()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = model
@@ -22,7 +23,9 @@ class Trainer(object):
         self.pid_criterion = torch.nn.CrossEntropyLoss().to(self.device)
         self.lmd = lmd
         self.include_mmd = include_mmd
+        self.include_coral = include_coral
         self.mmd_criterion = MmdLoss()
+        self.coral_criterion = CoralLoss()
 
     def train(self, epoch, data_loader, target_train_loader, optimizer, print_freq=1):
         self.set_model_train()
@@ -62,10 +65,13 @@ class Trainer(object):
             outputs_target = self.model(inputs_target, 'tgt_feat')
             loss_un = self.model_inv(outputs_target, index_target, epoch=epoch)
 
-            # Mmd loss
-            if self.include_mmd:   
+            # Mmd loss and Coral Loss
+            if self.include_mmd:
                 loss_mmd = self.mmd_criterion(outputs_source_partial, outputs_target)
                 loss = (1 - self.lmd) * source_pid_loss + self.lmd * (loss_un + loss_mmd)
+            elif self.include_coral:
+                loss_coral = self.coral_criterion(outputs_source_partial, outputs_target)
+                loss = (1 - self.lmd) * source_pid_loss + self.lmd * (loss_un + loss_coral)
             else:
                 loss = (1 - self.lmd) * source_pid_loss + self.lmd * (loss_un)
 
