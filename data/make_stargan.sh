@@ -1,0 +1,13 @@
+python download.py 10sgWn3s5-jeavrq8yqqIMdQs7rWp_0qY stargan_market.tar.gz
+tar -xvzf stargan_market.tar.gz
+mv bounding_box_train_camstyle_stargan4reid market/bounding_box_train_camstyle_stargan
+rm stargan_market.tar.gz
+mv market/bounding_box_train_camstyle market/bounding_box_train_camstyle_cyclegan
+python rename_stargan.py -f market
+
+python download.py 1upT54Xz8XmTwE7pCqyA6wMyFQ2mfMIw1 stargan_duke.tar.gz
+tar -xvzf stargan_duke.tar.gz
+mv bounding_box_train_camstyle_stargan4reid duke/bounding_box_train_camstyle_stargan
+rm stargan_duke.tar.gz
+mv duke/bounding_box_train_camstyle duke/bounding_box_train_camstyle_cyclegan
+python rename_stargan.py -f duke
