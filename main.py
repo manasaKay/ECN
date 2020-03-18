@@ -20,9 +20,9 @@ from reid.utils.serialization import load_checkpoint, save_checkpoint
 from reid.loss import InvNet
 
 
-def get_data(data_dir, source, target, height, width, batch_size, re=0, workers=8):
+def get_data(data_dir, source, target, height, width, batch_size, camstyle_type, re=0, workers=8):
 
-    dataset = DA(data_dir, source, target)
+    dataset = DA(data_dir, source, target, camstyle_type)
 
     normalizer = T.Normalize(mean=[0.485, 0.456, 0.406],
                              std=[0.229, 0.224, 0.225])
@@ -90,7 +90,8 @@ def main(args):
     dataset, num_classes, source_train_loader, target_train_loader, \
     query_loader, gallery_loader = get_data(args.data_dir, args.source,
                                             args.target, args.height,
-                                            args.width, args.batch_size,
+                                            args.width, args.batch_size, 
+                                            args.camstyle_type,
                                             args.re, args.workers)
 
     # Create model
@@ -209,6 +210,8 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=60)
     parser.add_argument('--epochs_decay', type=int, default=40)
     parser.add_argument('--print-freq', type=int, default=1)
+    parser.add_argument('-cs', '--camstyle_type', type=str, required=True,
+                        help='cyclegan or stargan, gan type used for camstyle images')
     # metric learning
     parser.add_argument('--dist-metric', type=str, default='euclidean')
     # misc

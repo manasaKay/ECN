@@ -8,7 +8,7 @@ import re
 
 class DA(object):
 
-    def __init__(self, data_dir, source, target):
+    def __init__(self, data_dir, source, target, camstyle_type):
 
         # source / target image root
         self.source_images_dir = osp.join(data_dir, source)
@@ -16,7 +16,7 @@ class DA(object):
         # training image dir
         self.source_train_path = 'bounding_box_train'
         self.target_train_path = 'bounding_box_train'
-        self.target_train_camstyle_path = 'bounding_box_train_camstyle'
+        self.target_train_camstyle_path = 'bounding_box_train_camstyle_' + str(camstyle_type)
         self.gallery_path = 'bounding_box_test'
         self.query_path = 'query'
 
