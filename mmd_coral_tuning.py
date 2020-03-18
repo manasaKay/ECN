@@ -1,7 +1,7 @@
 import os
 
-lmds = ['0', '0.3']
-lmd_exts = ['0', '0.33', '0.66', '1']
+lmds = ['0.3']
+lmd_exts = ['0.33', '0.66', '1']
 ignore = []
 
 for lmd in lmds:
