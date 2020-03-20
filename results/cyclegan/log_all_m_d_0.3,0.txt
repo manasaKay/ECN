@@ -6405,9 +6405,9 @@ Extract Features: [135/138]	Time 0.092 (0.110)	Data 0.000 (0.008)
 Extract Features: [136/138]	Time 0.092 (0.110)	Data 0.000 (0.008)	
 Extract Features: [137/138]	Time 0.092 (0.110)	Data 0.000 (0.008)	
 Extract Features: [138/138]	Time 0.899 (0.116)	Data 0.000 (0.008)	
-Mean AP: 40.7%
+Mean AP: 40.4%
 CMC Scores
-  top-1          63.7%
+  top-1          63.3%
   top-5          76.3%
   top-10         80.4%
   top-20         84.0%
