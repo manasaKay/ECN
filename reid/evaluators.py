@@ -90,13 +90,23 @@ def evaluate_all(distmat, query=None, gallery=None,
                 and query_cams is not None and gallery_cams is not None)
 
     # Evaluation
-    mAP, all_cmc = map_cmc(distmat, query_ids, gallery_ids, query_cams, gallery_cams)
+    mAP, all_cmc, retrieveds = map_cmc(distmat, query_ids, gallery_ids, query_cams, gallery_cams)
+    
     print('Mean AP: {:4.1%}'.format(mAP))
     print('CMC Scores')
     for k in cmc_topk:
         print('  top-{:<4}{:12.1%}'
               .format(k, all_cmc[k - 1]))
-    return
+    
+    q = []
+    rs = []
+    for i in range(10):
+        q.append(query[i][0])
+        r = []
+        for ind in retrieveds[i]:
+            r.append(gallery[ind][0])
+        rs.append(r)
+    return q, rs
 
     # Traditional evaluation
     # Compute mean AP

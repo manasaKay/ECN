@@ -50,15 +50,24 @@ def map_cmc(distmat, query_ids=None, gallery_ids=None,
     # Sort and find correct matches
     indices = np.argsort(distmat, axis=1)
     matches = (gallery_ids[indices] == query_ids[:, np.newaxis])
+        
     # Compute mAP and CMC for each query
     ret = np.zeros(topk)
     aps = []
     num_valid_queries = 0
+    retrieveds = []
     for i in range(m):
         # Filter out the same id and same camera
         valid = ((gallery_ids[indices[i]] != query_ids[i]) |
                  (gallery_cams[indices[i]] != query_cams[i]))
         if not np.any(matches[i, valid]): continue
+        
+        retrieved = []
+        for ind in indices[i]:
+            if gallery_ids[ind] != query_ids[i] or gallery_cams[ind] != query_cams[i]:
+                retrieved.append(ind)
+                if len(retrieved) == 5: break
+        retrieveds.append(retrieved)
 
         # Compute mAP
         y_true = matches[i, valid]
@@ -75,7 +84,7 @@ def map_cmc(distmat, query_ids=None, gallery_ids=None,
         num_valid_queries += 1
     if num_valid_queries == 0:
         raise RuntimeError("No valid query")
-    return np.mean(aps), ret.cumsum() / num_valid_queries
+    return np.mean(aps), ret.cumsum() / num_valid_queries, retrieveds
 
 
 def cmc(distmat, query_ids=None, gallery_ids=None,
