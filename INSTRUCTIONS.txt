@@ -1,0 +1,17 @@
+* Download the link in google drive and unzip the folder.
+* In the terminal, change directory to ECN.
+* Make sure to check that checkpoint_m_to_d.pth.tar and checkpoint_d_to_m.pth.tar are stored in the logs folder.
+* In terminal, type  >> sh run.sh
+
+Explanation of what happens in run.sh:
+1) The script first creates the duke, market and star_gan datasets - this step will run for a couple of hours.
+
+2) For source as Duke and target as Market, the script loads the best model weights from the logs folder. 
+    * The query images as well as the top 5 images predicted by the model as closest to each corresponding query image are stored in the folder "results_market_to_duke". The format in which it is stored in given below.
+q_1.jpg --> r_1_1.jpg, r_1_2.jpg, r_1_3.jpg, r_1_4.jpg, r_1_5.jpg
+q_2.jpg --> r_2_1.jpg, r_2_2.jpg, r_2_3.jpg, r_2_4.jpg, r_2_5.jpg
+and so on until
+q_10.jpg --> r_10_1.jpg, r_10_2.jpg, r_10_3.jpg, r_10_4.jpg, r_10_5.jpg
+    * Also, the reported CMC and mAP scores are displayed in the terminal.
+
+3) Same way, for source as Market and target as Duke, the script loads the best model weights and considers 10 query images from the target and obtains the 5 closest images to it. These images are stored in the same format as above, in the folder "results_duke_to_market". Also, the reported CMC and mAP scores are displayed in the terminal.

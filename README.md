@@ -65,5 +65,6 @@
 This will produce all the results that are shown in the paper. This generates a log file for every run and the last 5 lines of the log file contains the mAP scores and other results. 
 
   ```Shell
-  # python3 mmd_coral_tuning.py
+  # python3 main.py -s duke -t market -cs cyclegan -mmd 1 --lmd 0.3 --lmd_ext 0.33
+  # python3 main.py -s duke -t market -cs cyclegan -mmd 1 --lmd 0.3 --lmd_ext 0.33  --evaluate --resume logs/checkpoint.pth.tar
   ```
