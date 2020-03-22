@@ -123,8 +123,11 @@ def main(args):
     evaluator = Evaluator(model)
     if args.evaluate:
         print("Test:")
-        evaluator.evaluate(query_loader, gallery_loader, dataset.query,
+        query, retrieveds = evaluator.evaluate(query_loader, gallery_loader, dataset.query,
                            dataset.gallery, args.output_feature)
+        for i in range(len(query)):
+            Image.open("data/" + args.target + "/query/" + query[i]).save("q_%d.jpg" % i)
+            for j in range(len(retrieveds[i])): Image.open("data/" + args.target + "/bounding_box_test/" + retrieveds[i][j]).save("r_%d_%d.jpg" % (i, j))
         return
 
     # Optimizer
@@ -168,6 +171,7 @@ def main(args):
               format(epoch))
 
     # Final test
+    
     print('Test with best model:')
     evaluator = Evaluator(model)
     query, retrieveds = evaluator.evaluate(query_loader, gallery_loader, dataset.query,
