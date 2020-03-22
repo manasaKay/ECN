@@ -13,3 +13,6 @@ for lmd in lmds:
         os.system("python3 main.py -s market -t duke -cs cyclegan -mmd 1 --lmd %s --lmd_ext %s >log_mmd_m_d_%s,%s.txt 2>error.txt" % (lmd, lmd_ext, lmd, lmd_ext))
         os.system("python3 main.py -s duke -t market -cs cyclegan -coral 1 --lmd %s --lmd_ext %s >log_coral_d_m_%s,%s.txt 2>error.txt" % (lmd, lmd_ext, lmd, lmd_ext))
         os.system("python3 main.py -s market -t duke -cs cyclegan -coral 1 --lmd %s --lmd_ext %s >log_coral_m_d_%s,%s.txt 2>error.txt" % (lmd, lmd_ext, lmd, lmd_ext))
+
+os.system("python3 main.py -s duke -t market -cs stargan -mmd 1 --lmd 0.3 --lmd_ext 0.33 >log_stargan_d_m_%s,%s.txt 2>error.txt" % (0.3, 0.33, 0.3, 0.33))
+os.system("python3 main.py -s market -t duke -cs stargan -mmd 1 --lmd 0.3 --lmd_ext 0.33 >log_stargan_m_d_%s,%s.txt 2>error.txt" % (0.3, 0.33, 0.3, 0.33))
